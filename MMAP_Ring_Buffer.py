@@ -12,7 +12,7 @@ BUFFER_SIZE = 1024     #number of orders in ring buffer 1024 slots
 HEADER_SIZE = 16       #write pos + read pos, allocated 16 bytes, write pos =8 read pos = 8
 OREDER_SIZE = 24       #24 bytes
 
-"""calculating total size of mmap file"""
+#calculating total size of mmap file
 FILESIZE = HEADER_SIZE + (BUFFER_SIZE * OREDER_SIZE)
 
 ORDER_FORMAT = struct.Struct("QdQ")    #arrangement of order i.e. order id, price, quantity
@@ -21,8 +21,6 @@ ORDER_FORMAT = struct.Struct("QdQ")    #arrangement of order i.e. order id, pric
 
 HEADER_FORMAT = struct.Struct("QQ")   #binary layout of ring buffer
 #contains 2 values Q -> writepos (8 byt), Q -> readpos(8 bytes)
-
-
 
 class MMapRingBuffer:
     
@@ -36,7 +34,7 @@ class MMapRingBuffer:
         
         os.ftruncate(self.fd, FILESIZE)    #set file size
         
-        """mmap object creation"""
+        #mmap object creation
         self.mm = mmap.mmap(self.fd, FILESIZE, access=mmap.ACCESS_WRITE)
         #self.mm - stores the object returned by mmap.mmap()
         #mmap.mmap -> map file in memory
