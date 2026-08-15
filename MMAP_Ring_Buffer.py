@@ -52,15 +52,16 @@ class MMapRingBuffer:
             
     
     def getwritepos(self):
-        
+        """write position"""
     
     def getreadpos(self):
-        
+        """read position"""
     
     def write(self):
+        """write data"""
         
-    
     def read(self):
+        """read data"""
         
 ring = MMapRingBuffer("orders.mmap")
        
