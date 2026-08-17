@@ -52,11 +52,29 @@ class MMapRingBuffer:
             
     
     def getwritepos(self):
-         return struct.unpack_from("Q", self.mm, 0)[0]
+        
+        return struct.unpack_from("Q", self.mm, 0)[0]
+        
+        #unpack the data -- get the first value --- return that value
+        #struct.unpack_from -> Reads 8 bytes from self.mm starting from 0
+        #self.mm -> memory mapping region
+        #0 -> start pos
+        #Q -> 8 byts unsigned int
+        #unpack_from()-> returns a tuple
+        #[0] -> grts the first value of the tuple
     
     
     def getreadpos(self):
-         return struct.unpack_from("Q", self.mm, 8)[0]
+        
+        return struct.unpack_from("Q", self.mm, 8)[0]
+        
+        #read the value--stored in header -- return that value
+        #struct.unpack_from -> Reads 8 bytes from self.mm starting from 8 offset
+        #self.mm -> memory mapping region
+        #8 -> start reading from 8 byte offset
+        #Q -> 8 byts unsigned int
+        #unpack_from()-> returns a tuple
+        #[0] -> grts the first value of the tuple
     
     def write(self):
         """write data"""
