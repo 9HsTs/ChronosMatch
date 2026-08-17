@@ -52,10 +52,11 @@ class MMapRingBuffer:
             
     
     def getwritepos(self):
-        """write position"""
+         return struct.unpack_from("Q", self.mm, 0)[0]
+    
     
     def getreadpos(self):
-        """read position"""
+         return struct.unpack_from("Q", self.mm, 8)[0]
     
     def write(self):
         """write data"""
