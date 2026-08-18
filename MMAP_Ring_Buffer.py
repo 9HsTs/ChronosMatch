@@ -77,19 +77,29 @@ class MMapRingBuffer:
         #[0] -> grts the first value of the tuple
     
     def write(self, order_id, price, quantity):
-        write_pos = self.getwritepos()
-        read_pos = self.getreadpos()
+        #write position with 3 order values
         
+        write_pos = self.getwritepos()   #getwrite function -> write pos from mmap header
+        read_pos = self.getreadpos()     #getread function -> read pos from mmap header
+        
+        #Next write position calculation
         next_pos = (write_pos + 1)% BUFFER_SIZE
-        
+        # % buffersize create circular buffer
+
+        #buffer full check
+        #next write pos == read pos then buffer is full
         if next_pos == read_pos:
             return False
         
+        #actual memory offset calculation
+        #offset -> starting position where actual packing begins
         offset = HEADER_SIZE + (write_pos * OREDER_SIZE)
         
         ORDER_FORMAT.pack_into(self.mm, offset, order_id, price, quantity)
+        #values convert into binary and WRITE into mmap
         
         struct.pack_into("Q", self.mm, 0, next_pos)
+        #store next positiion
         
         return True
         
