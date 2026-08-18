@@ -104,8 +104,52 @@ class MMapRingBuffer:
         return True
         
     def read(self):
-        """read data"""
+        write_pos = self.getwritepos()
+        read_pos = self.getreadpos()
         
+        #buffer empty check
+        if read_pos == write_pos:
+            return None
+        
+        #calculate the orders offset-> location of order in mmap file
+        offset = HEADER_SIZE + (read_pos * OREDER_SIZE)
+        
+        #reading operation
+        #unpack from -> binary data from mmap convert it into py values
+        order_id, price, quantity = ORDER_FORMAT.unpack_from(self.mm, offset)
+        
+        #calculate next read position
+        next_pos = (read_pos + 1)% BUFFER_SIZE
+        # % buffersize create circular buffer
+
+        struct.pack_into("Q", self.mm, 8, next_pos)
+        #writes new position into the mmap
+
+        return order_id, price, quantity
+        #returns a tuple
+    
+    def close(self):
+        self.mm.close()
+        os.close(self.fd)
+        #close the file
+        
+#object of class MMapRingBuffer        
 ring = MMapRingBuffer("orders.mmap")
+
+ring.write(order_id = 1001, price = 245.50, quantity = 100)
+ring.write(order_id = 1002, price = 245.55, quantity = 50)
+
+#user input
+#ring.write(order_id = int(input("Order ID :: ")), price = float(input("Price :: ")), quantity = int(input("Quantity :: ")))
+#ring.write(order_id = int(input("Order ID :: ")), price = float(input("Price :: ")), quantity = int(input("Quantity :: ")))
+
+
+order = ring.read()
+print(order)
+
+order = ring.read()
+print(order)
+
+ring.close()
        
         
