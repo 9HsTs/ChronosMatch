@@ -76,8 +76,22 @@ class MMapRingBuffer:
         #unpack_from()-> returns a tuple
         #[0] -> grts the first value of the tuple
     
-    def write(self):
-        """write data"""
+    def write(self, order_id, price, quantity):
+        write_pos = self.getwritepos()
+        read_pos = self.getreadpos()
+        
+        next_pos = (write_pos + 1)% BUFFER_SIZE
+        
+        if next_pos == read_pos:
+            return False
+        
+        offset = HEADER_SIZE + (write_pos * OREDER_SIZE)
+        
+        ORDER_FORMAT.pack_into(self.mm, offset, order_id, price, quantity)
+        
+        struct.pack_into("Q", self.mm, 0, next_pos)
+        
+        return True
         
     def read(self):
         """read data"""
